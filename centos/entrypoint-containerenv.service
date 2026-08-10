@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+[Unit]
+Description=Save container environment vars
+Before=entrypoint-before-ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c 'xargs --null --max-args=1 echo < /proc/1/environ > /run/container-env'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

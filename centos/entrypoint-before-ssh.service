@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+[Unit]
+Description=Run entrypoint script before SSH
+Before=sshd.service
+After=entrypoint-containerenv.service
+
+[Service]
+EnvironmentFile=/run/container-env
+Type=oneshot
+ExecStart=/usr/local/bin/entrypoint.sh
+RemainAfterExit=yes
+# Restart=on-failure
+# StartLimitIntervalSec=30
+# StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

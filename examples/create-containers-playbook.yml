@@ -1,0 +1,99 @@
+---
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+# Start containers with SSHD, as dummy managed servers for Ansible
+#
+# Written for CentOS Stream 10.
+# Packages to install, and firewalld steps, may need to be modified
+# for hosts running other Linux distros.
+
+# - # --- Prepare host for sshd containers ----------------------- # - #
+- name: "Prepare host for sshd containers"
+  hosts: "containerhosts"
+  become: true
+  gather_facts: false
+  vars_files:
+    - "managed-systems.yml"
+  tasks:
+
+    - name: "Ensure podman is installed"
+      ansible.builtin.package:
+        name:
+          - "podman"
+          # The following 2 packages are required by ansible.posix.firewalld
+          - "firewalld"
+          - "python-firewall"
+        state: "present"
+      tags: ["never", "install"]
+
+    - name: "Ensure user account for containers exists"
+      ansible.builtin.user:
+        name: "{{ managed_sshd_containers_become }}"
+        state: "present"
+      register: "sshd_container_user_res"
+      tags: ["never", "install"]
+
+    - name: "Enable linger"
+      ansible.builtin.command:
+        cmd: "loginctl enable-linger managed_sshd_containers_become }}"
+      when: "sshd_container_user_res.changed"
+      tags: ["never", "install"]
+
+
+# - # --- Start sshd containers ---------------------------------- # - #
+- name: "Start sshd containers"
+  hosts: "containerhosts"
+  become: true
+  become_user: "root"
+  gather_facts: false
+  vars_files:
+    - "managed-systems.yml"
+  tasks:
+
+    - name: "Read ssh public key"
+      ansible.builtin.slurp:
+        src: "{{ (lookup('env', 'HOME'), '.ssh', 'id_ed25519.pub') | ansible.builtin.path_join }}"
+      register: "personal_pubkey"
+
+    - name: "Ensure containers are running"
+      ansible.builtin.command:
+        cmd: >-
+          podman run -d --rm --replace
+          --name="ansiblemanaged-{{ container.hostname }}"
+          --hostname="{{ container.hostname }}"
+          -e PUID=1000 -e PGID=1000
+          -e TZ="{{ container_timezone }}"
+          -e PUBLIC_KEY="{{ personal_pubkey }}"
+          -e SUDO_ACCESS=true
+          -e USER_NAME="{{ container.username | default('ansible', true) }}"
+          -e LISTEN_PORT="{{ container.port }}"
+          --network=host {{ container_image }}
+      become_user: "{{ managed_sshd_containers_become }}"
+      loop: "{{ managed_sshd_containers }}"
+      loop_control:
+        loop_var: "container"
+
+    - name: "Populate service facts"
+      ansible.builtin.service_facts:
+
+    - name: "Show firewalld status"
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['services']['firewalld.service']['status'] | default('not-found') }}"
+      when:
+        - "ansible_facts['services']['firewalld.service'] is defined"
+        - "ansible_facts['services']['firewalld.service']['status'] is defined"
+      tags: ["never", "debug"]
+
+    - name: "Allow SSH container traffic through firewall"
+      ansible.builtin.firewalld:
+        port: "{{ container.port }}/tcp"
+        state: "enabled"
+        permanent: false
+      loop: "{{ managed_sshd_containers }}"
+      loop_control:
+        loop_var: "container"
+      when:
+        - "ansible_facts['services']['firewalld.service'] is defined"
+        - "ansible_facts['services']['firewalld.service']['status'] is defined"
+        - "ansible_facts['services']['firewalld.service']['status'] == 'enabled'"

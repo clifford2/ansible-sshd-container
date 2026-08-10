@@ -1,0 +1,28 @@
+---
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+# SSHD container config
+container_timezone: "Africa/Johannesburg"
+container_image: "docker.io/cliffordw/aap-demo-sshd:0.0.5"
+# User on container host that will run the containers
+managed_sshd_containers_become: "sshcontainers"
+# SSHD containers to create
+managed_sshd_containers:
+  - hostname: "db01"
+    port: 2001
+    username: "postgres"
+  - hostname: "app01"
+    username: "postgres"
+    port: 2002
+    username: "laravel"
+  - hostname: "app02"
+    port: 2003
+    username: "laravel"
+  - hostname: "app03"
+    port: 2004
+    username: "laravel"
+  - hostname: "lb01"
+    port: 2005
+    username: "haproxy"
+

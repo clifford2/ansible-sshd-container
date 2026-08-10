@@ -1,0 +1,32 @@
+---
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+# Example Ansible inventory
+all:
+  children:
+    # Host running the containers
+    containerhosts:
+      hosts:
+        containerhost.example.com:
+    # Containers acting as managed systems
+    # Test with: ansible -i inventory.yml democontainers -m ping
+    democontainers:
+      hosts:
+        db01:
+          ansible_ssh_host: "containerhost.example.com"
+          ansible_ssh_port: 2001
+        app01:
+          ansible_ssh_host: "containerhost.example.com"
+          ansible_ssh_port: 2002
+        app02:
+          ansible_ssh_host: "containerhost.example.com"
+          ansible_ssh_port: 2003
+        app03:
+          ansible_ssh_host: "containerhost.example.com"
+          ansible_ssh_port: 2004
+        lb01:
+          ansible_ssh_host: "containerhost.example.com"
+          ansible_ssh_port: 2005
+      vars:
+          ansible_user: "ansible"

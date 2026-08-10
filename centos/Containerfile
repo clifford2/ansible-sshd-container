@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>                                                                                 
+# SPDX-License-Identifier: MIT-0
+
+FROM quay.io/centos/centos:stream10
+
+RUN dnf install -y openssh openssh-server sudo python3 procps-ng
+RUN dnf install -y openssh-clients
+# RUN dnf install -y rsyslog
+# RUN dnf install -y openssh-askpass
+
+RUN echo 'LogLevel VERBOSE' >> /etc/ssh/sshd_config
+RUN sed -i -e 's/UsePAM.*$/UsePAM no/' /etc/ssh/sshd_config.d/50-redhat.conf
+
+COPY --chmod=0644 entrypoint-containerenv.service entrypoint-before-ssh.service /etc/systemd/system
+RUN systemctl enable entrypoint-before-ssh.service
+RUN systemctl enable entrypoint-containerenv.service
+COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
+
+CMD ["/sbin/init"]
+# CMD ["/usr/local/bin/entrypoint.sh"]

@@ -6,7 +6,8 @@ SSH_PUBKEY := $(shell cat ~/.ssh/id_ed25519.pub)
 SSH_PORT := 2943
 LOCAL_IMAGE_NAME := localhost/aap-demo-sshd:$(IMG_VERSION)
 PUBLISHED_IMAGE_NAME := docker.io/cliffordw/aap-demo-sshd:$(IMG_VERSION)
-CONTAINER_NAME := aap-demo-sshd
+CONTAINER_NAME := "aap-demo-sshd"
+TRIVY_IMAGE := "docker.io/aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
 
 .PHONY: help
 help:
@@ -49,3 +50,7 @@ test: run .sleep uname stop
 push-to-docker:
 	podman tag $(LOCAL_IMAGE_NAME) $(PUBLISHED_IMAGE_NAME)
 	podman push $(PUBLISHED_IMAGE_NAME)
+
+.PHONY: trivy
+trivy:
+	podman run --rm -v /run/user/$(shell id -u)/podman/podman.sock:/var/run/podman/podman.sock:z -v ~/.cache/trivy:/root/.cache/:Z $(TRIVY_IMAGE) image $(LOCAL_IMAGE_NAME) --exit-code 1 --no-progress --severity HIGH,CRITICAL --podman-host /var/run/podman/podman.sock

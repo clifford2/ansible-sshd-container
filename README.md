@@ -20,6 +20,8 @@ For **local** testing (without AAP), the
 framework offers more flexibility.
 See <https://github.com/clifford2/molecule-containers> for examples.
 
+Inspired by LinuxServer.io's [openssh-server](https://docs.linuxserver.io/images/docker-openssh-server/).
+
 ## Build
 
 Build with:

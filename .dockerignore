@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: © 2024 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-License-Identifier: MIT-0
+
+*.swp
+*.bak
+*.log
+.vscode
+.DS_Store
+.bash_history
+.vscode
+.lesshst
+/README.md
+/REUSE.toml
+/LICENSES/
+/examples/
+/centos/

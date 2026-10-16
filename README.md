@@ -4,15 +4,16 @@
 
 A very basic container image, running SSHD.
 
-This was created for an Ansible Automation Platform (AAP) demonstration, to
-use as quick / lightweight Ansible managed systems, where multiple managed
-systems where required to test various inventory & RBAC scenarios.
+This is useful mostly for Ansible Automation Platform (AAP) demonstrations,
+and is used as quick, lightweight Ansible managed systems, where multiple
+managed systems are required.
+Examples include testing various inventory & RBAC scenarios.
 
 This image is built on [Alpine Linux](https://www.alpinelinux.org/),
 and runs SSHD in PID 1.
 
-A version that is built on CentOS Stream 10, which runs systemd, is
-available in the `centos` directory, but it doesn't support `sudo` yet.
+A version that is built on CentOS Stream 10, running systemd, is available
+in the `centos` directory, but it doesn't support `sudo` yet.
 
 For **local** testing (without AAP), the
 [Molecule](https://docs.ansible.com/projects/molecule/) testing

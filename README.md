@@ -2,12 +2,11 @@
 
 ## About
 
-A very basic container image, running SSHD.
+A very basic container image, running SSHD, with Python installed.
 
-This is useful mostly for Ansible Automation Platform (AAP) demonstrations,
-and is used as quick, lightweight Ansible managed systems, where multiple
-managed systems are required.
-Examples include testing various inventory & RBAC scenarios.
+This is used as quick, lightweight **Ansible** managed systems.
+It was created for Ansible Automation Platform (AAP) demonstrations,
+for example to test various inventory & RBAC scenarios.
 
 This image is built on [Alpine Linux](https://www.alpinelinux.org/),
 and runs SSHD in PID 1.

@@ -33,15 +33,15 @@ make build
 
 The container can be configured by passing the following environment variables:
 
+- `SSH_LISTEN_PORT`: Port for SSHD to listen on (default: 2222)
 - `USER_NAME`: user name (default: `ansible`)
 - `PUID`: User UID (default: 1000)
 - `PGID`: User GID (default: 1000)
 - `SUDO_ACCESS="true"`: enable `sudo` access for `$USER_NAME`
+- `SSH_PASSWORD_ACCESS="true"`: Allow PasswordAuthentication (default: false)
 - `USER_PASSWORD_FILE`: file containing password
 - `USER_PASSWORD`: plain text password (default: random)
-- `SSH_LISTEN_PORT`: Port for SSHD to listen on (default: 2222)
 - `SFTP_UMASK`: umask for SFTP (default: 022)
-- `SSH_PASSWORD_ACCESS="true"`: Allow PasswordAuthentication
 - `SSH_PUBLIC_KEY`: Add this SSH public key to `authorized_keys`
 - `SSH_PUBLIC_KEY_URL`: Add SSH public key from this URL to `authorized_keys`
 - `SSH_PUBLIC_KEY_FILE`: Add SSH public key from this file to `authorized_keys`

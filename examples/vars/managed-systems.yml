@@ -4,7 +4,7 @@
 
 # SSHD container config
 container_timezone: "Africa/Johannesburg"
-container_image: "docker.io/cliffordw/aap-demo-sshd:0.0.5"
+container_image: "docker.io/cliffordw/aap-demo-sshd:0.0.7"
 # User on container host that will run the containers
 managed_sshd_containers_become: "sshcontainers"
 # SSHD containers to create

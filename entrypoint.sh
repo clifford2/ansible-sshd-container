@@ -9,6 +9,7 @@ USER_NAME=${USER_NAME:-ansible}
 echo "User name is set to $USER_NAME"
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
+SSH_PASSWORD_ACCESS=${SSH_PASSWORD_ACCESS:-false}
 
 # Create user on Alpine 3.22 / CentOS
 # groupadd --gid $PGID $USER_NAME
@@ -47,13 +48,13 @@ sed -i "s/^Port [[:digit:]]\+/Port ${SSH_LISTEN_PORT}"/ /etc/ssh/sshd_config
 echo "sshd is listening on port ${SSH_LISTEN_PORT}"
 
 # Password access
+sed -i -e 's/^PasswordAuthentication/# PasswordAuthentication/i' /etc/ssh/sshd_config
 if [[ "$SSH_PASSWORD_ACCESS" == "true" ]]; then
-	sed -i '/^#PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
-	sed -i '/^PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+	echo 'PasswordAuthentication yes' > /etc/ssh/sshd_config.d/01-passwordauth.conf
 	chown root:"${USER_NAME}" /etc/shadow
 	echo "User/password ssh access is enabled."
 else
-	sed -i '/^PasswordAuthentication/c\PasswordAuthentication no' /etc/ssh/sshd_config
+	echo 'PasswordAuthentication no' > /etc/ssh/sshd_config.d/01-passwordauth.conf
 	chown root:root /etc/shadow
 	echo "User/password ssh access is disabled."
 fi

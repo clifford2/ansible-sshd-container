@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © 2026 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: MIT-0
 
-FROM docker.io/library/alpine:3.24.3
+FROM docker.io/library/alpine:3.24.4
 
 RUN apk update && apk add --no-cache bash openssh rsync augeas shadow sudo acl python3
 

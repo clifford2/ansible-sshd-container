@@ -11,7 +11,13 @@ TRIVY_IMAGE := "docker.io/aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be
 
 .PHONY: help
 help:
-	@echo "No default target"
+	@echo "No default target. Key targets:"
+	@echo ""
+	@echo "build"
+	@echo "test"
+	@echo "trivy"
+	@echo "push-to-docker"
+	@echo ""
 	@echo "Image: $(LOCAL_IMAGE_NAME)"
 
 .PHONY: build
